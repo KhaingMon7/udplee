@@ -229,7 +229,7 @@ if jq . >/dev/null 2>&1 <<<'{}'; then
   jq --argjson pw "$PW_LIST" --arg ip "$SERVER_IP" '
     .auth.mode = "passwords" |
     .auth.config = $pw |
-    .listen = ":1-65535" |
+    .listen = ":5667" |
     .cert = "/etc/zivpn/zivpn.crt" |
     .key  = "/etc/zivpn/zivpn.key" |
     .obfs = "wechat" |
@@ -1608,6 +1608,7 @@ IFACE=$(ip -4 route ls | awk '/default/ {print $5; exit}')
 # DNAT Rules
 iptables -t nat -F
 iptables -t nat -A PREROUTING -i "$IFACE" -p udp --dport 6000:19999 -j DNAT --to-destination :5667
+iptables -t nat -A PREROUTING -i "$IFACE" -p udp --dport 5667 -j DNAT --to-destination :5667
 iptables -t nat -A POSTROUTING -o "$IFACE" -j MASQUERADE
 
 # UFW Rules
